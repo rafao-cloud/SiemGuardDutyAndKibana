@@ -1,6 +1,6 @@
 # SiemGuardDutyAndKibana
 
-A Siem environment using Guard Duty + Kinbana + S3 + ES + Cognito +  Kinesis
+A Siem environment using Guard Duty + Kibana + S3 + ES + Cognito +  Kinesis
 
 Fork with some changes helped by that content:
 
