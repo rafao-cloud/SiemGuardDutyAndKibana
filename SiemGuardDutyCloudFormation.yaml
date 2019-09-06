@@ -1,0 +1,328 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: >
+  Run it like this:
+  aws cloudformation deploy --template-file ./visualizeguardduty.yaml --stack-name guard --capabilities CAPABILITY_IAM --parameter-overrides EmailAddress=sakariar+1@amazon.com IndexName=gdt
+Parameters:
+  EmailAddress:
+    Type: String
+    Description: An email address
+  ESDomainName:
+    Type: String
+    Description: Elasticsearch Domain Name
+    Default: "guard-duty-findings"
+  IndexName:
+    Type: String
+    Description: Elasticsearch Index
+    Default: "gdt"
+Resources:
+  CognitoUserPool:
+    Type: "AWS::Cognito::UserPool"
+    Properties:
+      UserPoolName: !Join ["-", ["VisualizeGuardDutyUserPool", !Ref "AWS::StackName" ] ]
+  CognitoUserPoolClient:
+    Type: "AWS::Cognito::UserPoolClient"
+    Properties:
+      GenerateSecret: false  #not sure what the default is - if false, then we don't need this property
+      UserPoolId: !Ref CognitoUserPool
+  KibanaUser:
+    Type: "AWS::Cognito::UserPoolUser"
+    Properties:
+      Username: !Ref EmailAddress
+      UserAttributes:
+      - Name: "email"
+        Value: !Ref EmailAddress
+      UserPoolId: !Ref CognitoUserPool
+  SnsTopic:
+    Type: "AWS::SNS::Topic"
+  SnsSubscription:
+    Type: "AWS::SNS::Subscription"
+    Properties:
+      Endpoint: !Ref EmailAddress
+      Protocol: "email"
+      TopicArn: !Ref SnsTopic
+  ElasticSearchDomain:
+    Type: "AWS::Elasticsearch::Domain"
+    Properties:
+      DomainName: !Ref ESDomainName
+      ElasticsearchVersion: "6.2"
+      ElasticsearchClusterConfig:
+        DedicatedMasterEnabled: "false"
+        InstanceCount: "1"
+        ZoneAwarenessEnabled: "false"
+        InstanceType: "m4.large.elasticsearch"
+      EBSOptions:
+        EBSEnabled: true
+        Iops: 0
+        VolumeSize: 20
+        VolumeType: "gp2"
+      AccessPolicies:
+        Version: 2012-10-17
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              AWS: !GetAtt CognitoKibanaAuthRole.Arn
+            Action: "es:*"
+            Resource: !Join [ "", ["arn:aws:es:", !Ref "AWS::Region", ":" , !Ref "AWS::AccountId", ":domain/", !Ref ESDomainName, "/*" ] ]
+  BackupBucket:
+    Type: "AWS::S3::Bucket"
+    Properties:
+      AccessControl: Private
+# Role used to enable Cognito authentication in Elasticsearch domain
+  ESEnableCognitoRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: es.amazonaws.com
+            Action:
+              - "sts:AssumeRole"
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonESCognitoAccess
+  CognitoKibanaAuthRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Federated: cognito-identity.amazonaws.com
+            Action:
+              - "sts:AssumeRoleWithWebIdentity"
+            Condition:
+              StringEquals:
+                "cognito-identity.amazonaws.com:aud": !Ref CognitoIDPool
+              "ForAnyValue:StringLike":
+                "cognito-identity.amazonaws.com:amr": authenticated
+  CognitoKibanaAuthPolicy:
+    Type: 'AWS::IAM::Policy'
+    Properties:
+      PolicyName: Cognito_Kibana_Auth_Policy
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - "mobileanalytics:PutEvents"
+              - "cognito-sync:*"
+              - "cognito-identity:*"
+            Resource: "*"
+      Roles:
+        - !Ref CognitoKibanaAuthRole
+  CognitoKibanaUnauthRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Federated: "cognito-identity.amazonaws.com"
+            Action:
+              - "sts:AssumeRoleWithWebIdentity"
+            Condition:
+              StringEquals:
+                "cognito-identity.amazonaws.com:aud": !Ref CognitoIDPool
+              "ForAnyValue:StringLike":
+                "cognito-identity.amazonaws.com:amr": unauthenticated
+  CognitoKibanaUnauthPolicy:
+    Type: 'AWS::IAM::Policy'
+    Properties:
+      PolicyName: Cognito_Kibana_Auth_Policy
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: "Allow"
+            Action:
+              - "mobileanalytics:PutEvents"
+              - "cognito-sync:*"
+            Resource: "*"
+      Roles:
+        - !Ref CognitoKibanaUnauthRole
+  CognitoIDPool:
+    Type: 'AWS::Cognito::IdentityPool'
+    Properties:
+      IdentityPoolName: "VisualizeGuardDutyIDPool"
+      AllowUnauthenticatedIdentities: false
+      CognitoIdentityProviders:
+        - ClientId: !Ref CognitoUserPoolClient
+          ProviderName: !GetAtt CognitoUserPool.ProviderName
+  IdentityPoolRoleMapping:
+    Type: "AWS::Cognito::IdentityPoolRoleAttachment"
+    Properties:
+      IdentityPoolId: !Ref CognitoIDPool
+      Roles:
+        authenticated: !GetAtt CognitoKibanaAuthRole.Arn
+        unauthenticated: !GetAtt CognitoKibanaUnauthRole.Arn
+  CWEventRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Sid: ''
+            Effect: Allow
+            Principal:
+              Service: events.amazonaws.com
+            Action: 'sts:AssumeRole'
+  CWEventPolicy:
+    Type: 'AWS::IAM::Policy'
+    Properties:
+      PolicyName: AWS_Events_Invoke_Firehose
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - 'firehose:PutRecord'
+              - 'firehose:PutRecordBatch'
+            Resource:
+              - !GetAtt Firehose.Arn
+      Roles:
+        - !Ref CWEventRole
+  DeliveryRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Sid: ""
+            Effect: Allow
+            Principal:
+              Service: firehose.amazonaws.com
+            Action: "sts:AssumeRole"
+            Condition:
+              StringEquals:
+                "sts:ExternalId": !Ref "AWS::AccountId"
+  DeliveryPolicy:
+    Type: 'AWS::IAM::Policy'
+    Properties:
+      PolicyName: firehose_delivery_policy
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - "s3:AbortMultipartUpload"
+              - "s3:GetBucketLocation"
+              - "s3:GetObject"
+              - "s3:ListBucket"
+              - "s3:ListBucketMultipartUploads"
+              - "s3:PutObject"
+            Resource:
+              - !Join [ "", [  "arn:aws:s3:::", !Ref BackupBucket ] ]
+              - !Join [ "", [  "arn:aws:s3:::", !Ref BackupBucket, "/*" ] ]
+          - Sid: ""
+            Effect: Allow
+            Action:
+              - "lambda:InvokeFunction"
+              - "lambda:GetFunctionConfiguration"
+            Resource:
+              - !Join [ ":", ["arn:aws:lambda", !Ref "AWS::Region", !Ref "AWS::AccountId", "function:%FIREHOSE_DEFAULT_FUNCTION%:%FIREHOSE_DEFAULT_VERSION%" ] ]
+          - Sid: ""
+            Effect: Allow
+            Action:
+              - "es:DescribeElasticsearchDomain"
+              - "es:DescribeElasticsearchDomains"
+              - "es:DescribeElasticsearchDomainConfig"
+              - "es:ESHttpPost"
+              - "es:ESHttpPut"
+            Resource:
+              - !Join [ "", ["arn:aws:es:", !Ref "AWS::Region", ":" , !Ref "AWS::AccountId", ":", "domain/", !Ref ESDomainName ] ]
+              - !Join [ "", ["arn:aws:es:", !Ref "AWS::Region", ":" , !Ref "AWS::AccountId", ":", "domain/", !Ref ESDomainName, "/*" ] ]
+          - Sid: ""
+            Effect: Allow
+            Action:
+              - "es:ESHttpGet"
+            Resource:
+              - !Join [ "", ["arn:aws:es:", !Ref "AWS::Region", ":" , !Ref "AWS::AccountId", ":domain/", !Ref ESDomainName, "/_all/_settings" ] ]
+              - !Join [ "", ["arn:aws:es:", !Ref "AWS::Region", ":" , !Ref "AWS::AccountId", ":domain/", !Ref ESDomainName, "/_cluster/stats" ] ]
+              - !Join [ "", ["arn:aws:es:", !Ref "AWS::Region", ":" , !Ref "AWS::AccountId", ":domain/", !Ref ESDomainName, "/", !Ref IndexName, "*/_mapping/log" ] ]
+              - !Join [ "", ["arn:aws:es:", !Ref "AWS::Region", ":" , !Ref "AWS::AccountId", ":domain/", !Ref ESDomainName, "/_nodes" ] ]
+              - !Join [ "", ["arn:aws:es:", !Ref "AWS::Region", ":" , !Ref "AWS::AccountId", ":domain/", !Ref ESDomainName, "/_nodes/stats" ] ]
+              - !Join [ "", ["arn:aws:es:", !Ref "AWS::Region", ":" , !Ref "AWS::AccountId", ":domain/", !Ref ESDomainName, "/_nodes/*/stats" ] ]
+              - !Join [ "", ["arn:aws:es:", !Ref "AWS::Region", ":" , !Ref "AWS::AccountId", ":domain/", !Ref ESDomainName, "/_stats" ] ]
+              - !Join [ "", ["arn:aws:es:", !Ref "AWS::Region", ":" , !Ref "AWS::AccountId", ":domain/", !Ref ESDomainName, "/", !Ref IndexName, "*/_stats" ] ]
+          - Sid: ""
+            Effect: Allow
+            Action:
+              - "log:PutLogEvents"
+            Resource:
+              - !Join [ "", ["arn:aws:logs:", !Ref "AWS::Region", ":" , !Ref "AWS::AccountId", ":log-group:/aws/kinesisfirehose/", !Ref ESDomainName, ":log-stream:*" ] ]
+      Roles:
+        - !Ref DeliveryRole
+  Firehose:
+    Type: "AWS::KinesisFirehose::DeliveryStream"
+    DependsOn: DeliveryPolicy
+    DependsOn: ElasticSearchDomain
+    Properties:
+      ElasticsearchDestinationConfiguration:
+        TypeName: "log"
+        BufferingHints:
+          IntervalInSeconds: 60
+          SizeInMBs: 50
+        DomainARN: !Join [ "", ["arn:aws:es:", !Ref "AWS::Region", ":" , !Ref "AWS::AccountId", ":domain/", !Ref ESDomainName ] ]
+        IndexName: !Ref IndexName
+        IndexRotationPeriod: "OneHour"
+        RetryOptions:
+          DurationInSeconds: "60"
+        RoleARN: !GetAtt DeliveryRole.Arn
+        S3BackupMode: "AllDocuments"
+        S3Configuration:
+          BucketARN: !Join
+            - ''
+            - - 'arn:aws:s3:::'
+              - !Ref BackupBucket
+          BufferingHints:
+            IntervalInSeconds: "60"
+            SizeInMBs: "50"
+          CompressionFormat: "UNCOMPRESSED"
+          Prefix: !Join [ "", [ !Ref "AWS::Region", "/" ] ]
+          RoleARN: !GetAtt DeliveryRole.Arn
+          CloudWatchLoggingOptions:
+            Enabled: true
+            LogGroupName: "deliverystream"
+            LogStreamName: "s3Backup"
+  CloudformationEvent:
+    Type: "AWS::Events::Rule"
+    Properties:
+      Description: "Guard Duty Visualization Blog Event Rule"
+      EventPattern:
+        source:
+          - "aws.guardduty"
+        detail-type:
+          - "GuardDuty Finding"
+      Targets:
+        - Arn: !GetAtt Firehose.Arn
+          Id: "guard-duty-firehose"
+          RoleArn: !GetAtt CWEventRole.Arn
+        - Arn: !Ref SnsTopic
+          Id: "guard-duty-sns"
+  MySnsPolicy:
+    Type: AWS::SNS::TopicPolicy
+    Properties:
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: "TrustCWEToPublsihEvents"
+            Effect: "Allow"
+            Principal: 
+              Service: events.amazonaws.com
+            Action: sns:Publish
+            Resource: "*"
+      Topics:
+      - !Ref SnsTopic
+#  GuardDuty:
+#    Type: "AWS::GuardDuty::Detector"
+#    Properties:
+#      Enable: true
+Outputs:
+  KibanaURL:
+    Description: "The URL to access Kibana. You will need to change your password on first login"
+    Value: !Join [ "", [ "https://", !GetAtt ElasticSearchDomain.DomainEndpoint, "/_plugin/kibana/" ] ]
+  ESCognitoRole:
+    Description: "Use this role to enable Cognito authentication in Elasticsearch"
+    Value: !Ref ESEnableCognitoRole
