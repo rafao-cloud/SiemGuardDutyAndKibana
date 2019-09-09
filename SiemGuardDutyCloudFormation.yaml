@@ -1,3 +1,5 @@
+# Cloud formation changed to use free tier for ES 09/09/2019
+# Form to SNS Changed 09/09/2019
 AWSTemplateFormatVersion: '2010-09-09'
 Description: >
   Run it like this:
@@ -5,7 +7,7 @@ Description: >
 Parameters:
   EmailAddress:
     Type: String
-    Description: An email address
+    Description: E-mail to receive the alarms 
   ESDomainName:
     Type: String
     Description: Elasticsearch Domain Name
@@ -49,7 +51,7 @@ Resources:
         DedicatedMasterEnabled: "false"
         InstanceCount: "1"
         ZoneAwarenessEnabled: "false"
-        InstanceType: "m4.large.elasticsearch"
+        InstanceType: "t2.small.elasticsearch"
       EBSOptions:
         EBSEnabled: true
         Iops: 0
