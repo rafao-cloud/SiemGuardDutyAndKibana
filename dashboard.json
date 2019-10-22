@@ -1,158 +1,24 @@
 [
-{
-"_id": "29ed7450-4ecd-11e8-8fcf-47b4f3c43412",
-"_type": "dashboard",
-"_source": {
-"title": "Guard Duty Summary",
-"hits": 0,
-"description": "Findings of Guard Duty",
-"panelsJSON": "[{\"panelIndex\":\"1\",\"gridData\":{\"x\":0,\"y\":0,\"w\":5,\"h\":3,\"i\":\"1\"},\"id\":\"2512d400-4fa1-11e8-84f7-3dc4803c5c72\",\"type\":\"visualization\",\"version\":\"6.2.2\"},{\"panelIndex\":\"4\",\"gridData\":{\"x\":0,\"y\":5,\"w\":11,\"h\":3,\"i\":\"4\"},\"id\":\"e1f98b00-5202-11e8-84f7-3dc4803c5c72\",\"type\":\"visualization\",\"version\":\"6.2.2\"},{\"panelIndex\":\"6\",\"gridData\":{\"x\":5,\"y\":0,\"w\":6,\"h\":3,\"i\":\"6\"},\"embeddableConfig\":{\"vis\":{\"legendOpen\":true}},\"id\":\"1ae2f2b0-539a-11e8-8fcf-47b4f3c43412\",\"type\":\"visualization\",\"version\":\"6.2.2\"},{\"panelIndex\":\"7\",\"gridData\":{\"x\":0,\"y\":3,\"w\":11,\"h\":2,\"i\":\"7\"},\"id\":\"39c50260-53a2-11e8-84f7-3dc4803c5c72\",\"type\":\"visualization\",\"version\":\"6.2.2\"},{\"panelIndex\":\"8\",\"gridData\":{\"x\":6,\"y\":12,\"w\":5,\"h\":4,\"i\":\"8\"},\"id\":\"09c74180-53cb-11e8-84f7-3dc4803c5c72\",\"type\":\"visualization\",\"version\":\"6.2.2\"},{\"panelIndex\":\"9\",\"gridData\":{\"x\":0,\"y\":8,\"w\":3,\"h\":4,\"i\":\"9\"},\"id\":\"a9038730-53ef-11e8-84f7-3dc4803c5c72\",\"type\":\"visualization\",\"version\":\"6.2.2\"},{\"panelIndex\":\"13\",\"gridData\":{\"x\":0,\"y\":16,\"w\":11,\"h\":4,\"i\":\"13\"},\"columns\":[\"_source\"],\"id\":\"24b407d0-5236-11e8-84f7-3dc4803c5c72\",\"type\":\"search\",\"version\":\"6.2.2\"},{\"panelIndex\":\"16\",\"gridData\":{\"x\":3,\"y\":8,\"w\":8,\"h\":4,\"i\":\"16\"},\"id\":\"c9c80440-5a12-11e8-84f7-3dc4803c5c72\",\"type\":\"visualization\",\"version\":\"6.2.2\"},{\"panelIndex\":\"17\",\"gridData\":{\"x\":0,\"y\":12,\"w\":6,\"h\":4,\"i\":\"17\"},\"embeddableConfig\":{\"mapCenter\":[51.6180165487737,0],\"mapZoom\":1},\"id\":\"2586bf40-5a88-11e8-b4bb-0be2df95142f\",\"type\":\"visualization\",\"version\":\"6.2.2\"}]",
-"optionsJSON": "{\"darkTheme\":false,\"hidePanelTitles\":false,\"useMargins\":true}",
-"version": 1,
-"timeRestore": true,
-"timeTo": "now",
-"timeFrom": "now/M",
-"refreshInterval": {
-"display": "Off",
-"pause": false,
-"section": 0,
-"value": 0
-},
-"kibanaSavedObjectMeta": {
-"searchSourceJSON": "{\"query\":{\"language\":\"lucene\",\"query\":\"\"},\"filter\":[{\"$state\":{\"store\":\"appState\"},\"meta\":{\"alias\":\"Show Sample Findings\",\"disabled\":true,\"index\":\"gdt-*\",\"key\":\"detail.service.additionalInfo.sample\",\"negate\":true,\"params\":{\"query\":true,\"type\":\"phrase\"},\"type\":\"phrase\",\"value\":true},\"query\":{\"match\":{\"detail.service.additionalInfo.sample\":{\"query\":true,\"type\":\"phrase\"}}}}],\"highlightAll\":true,\"version\":true}"
-}
-}
-},
-{
-"_id": "24b407d0-5236-11e8-84f7-3dc4803c5c72",
-"_type": "search",
-"_source": {
-"title": "All-GuardDuty",
-"description": "",
-"hits": 0,
-"columns": [
-"_source"
-],
-"sort": [
-"time",
-"desc"
-],
-"version": 1,
-"kibanaSavedObjectMeta": {
-"searchSourceJSON": "{\n  \"index\": \"gdt-*\",\n  \"highlightAll\": true,\n  \"version\": true,\n  \"query\": {\n    \"language\": \"lucene\",\n    \"query\": \"\"\n  },\n  \"filter\": []\n}"
-}
-}
-},
-{
-"_id": "2512d400-4fa1-11e8-84f7-3dc4803c5c72",
-"_type": "visualization",
-"_source": {
-"title": "GuardDuty - Affected Instances",
-"visState": "{\n  \"title\": \"GuardDuty - Affected Instances\",\n  \"type\": \"pie\",\n  \"params\": {\n    \"type\": \"pie\",\n    \"addTooltip\": true,\n    \"addLegend\": true,\n    \"legendPosition\": \"right\",\n    \"isDonut\": true,\n    \"labels\": {\n      \"show\": false,\n      \"values\": true,\n      \"last_level\": true,\n      \"truncate\": 100\n    }\n  },\n  \"aggs\": [\n    {\n      \"id\": \"1\",\n      \"enabled\": true,\n      \"type\": \"count\",\n      \"schema\": \"metric\",\n      \"params\": {}\n    },\n    {\n      \"id\": \"2\",\n      \"enabled\": true,\n      \"type\": \"terms\",\n      \"schema\": \"segment\",\n      \"params\": {\n        \"field\": \"detail.resource.instanceDetails.instanceId.keyword\",\n        \"otherBucket\": false,\n        \"otherBucketLabel\": \"Other\",\n        \"missingBucket\": false,\n        \"missingBucketLabel\": \"Missing\",\n        \"size\": 5,\n        \"order\": \"desc\",\n        \"orderBy\": \"1\"\n      }\n    }\n  ]\n}",
-"uiStateJSON": "{}",
-"description": "",
-"version": 1,
-"kibanaSavedObjectMeta": {
-"searchSourceJSON": "{\n  \"index\": \"gdt-*\",\n  \"filter\": [],\n  \"query\": {\n    \"query\": \"\",\n    \"language\": \"lucene\"\n  }\n}"
-}
-}
-},
-{
-"_id": "39c50260-53a2-11e8-84f7-3dc4803c5c72",
-"_type": "visualization",
-"_source": {
-"title": "GuardDuty - Events Per Day",
-"visState": "{\"title\":\"GuardDuty - Events Per Day\",\"type\":\"histogram\",\"params\":{\"addLegend\":true,\"addTimeMarker\":false,\"addTooltip\":true,\"categoryAxes\":[{\"id\":\"CategoryAxis-1\",\"labels\":{\"filter\":true,\"rotate\":0,\"show\":true,\"truncate\":25},\"position\":\"bottom\",\"scale\":{\"type\":\"linear\"},\"show\":true,\"style\":{},\"title\":{},\"type\":\"category\"}],\"grid\":{\"categoryLines\":false,\"style\":{\"color\":\"#eee\"}},\"legendPosition\":\"right\",\"seriesParams\":[{\"data\":{\"id\":\"1\",\"label\":\"Events\"},\"drawLinesBetweenPoints\":true,\"mode\":\"stacked\",\"show\":\"true\",\"showCircles\":true,\"type\":\"histogram\",\"valueAxis\":\"ValueAxis-1\"}],\"times\":[],\"type\":\"histogram\",\"valueAxes\":[{\"id\":\"ValueAxis-1\",\"labels\":{\"filter\":false,\"rotate\":0,\"show\":true,\"truncate\":100},\"name\":\"LeftAxis-1\",\"position\":\"left\",\"scale\":{\"mode\":\"normal\",\"type\":\"linear\",\"defaultYExtents\":true,\"setYExtents\":false},\"show\":true,\"style\":{},\"title\":{\"text\":\"Events\"},\"type\":\"value\"}]},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{\"customLabel\":\"Events\"}},{\"id\":\"2\",\"enabled\":true,\"type\":\"date_histogram\",\"schema\":\"segment\",\"params\":{\"field\":\"time\",\"interval\":\"h\",\"customInterval\":\"2h\",\"min_doc_count\":1,\"extended_bounds\":{}}}]}",
-"uiStateJSON": "{}",
-"description": "",
-"version": 1,
-"kibanaSavedObjectMeta": {
-"searchSourceJSON": "{\"index\":\"gdt-*\",\"filter\":[],\"query\":{\"language\":\"lucene\",\"query\":\"\"}}"
-}
-}
-},
-{
-"_id": "c9c80440-5a12-11e8-84f7-3dc4803c5c72",
-"_type": "visualization",
-"_source": {
-"title": "GuardDuty - Heatmap - Port Probe Source Countries",
-"visState": "{\"title\":\"GuardDuty - Heatmap - Port Probe Source Countries\",\"type\":\"tile_map\",\"params\":{\"mapType\":\"Scaled Circle Markers\",\"isDesaturated\":true,\"addTooltip\":true,\"heatClusterSize\":1.5,\"legendPosition\":\"bottomright\",\"mapZoom\":2,\"mapCenter\":[0,0],\"wms\":{\"enabled\":false,\"options\":{\"format\":\"image/png\",\"transparent\":true},\"baseLayersAreLoaded\":{\"_c\":[],\"_s\":1,\"_d\":true,\"_v\":true,\"_h\":0,\"_n\":false},\"tmsLayers\":[{\"id\":\"road_map\",\"url\":\"https://tiles.maps.elastic.co/v2/default/{z}/{x}/{y}.png?elastic_tile_service_tos=agree&my_app_name=kibana&my_app_version=6.2.2\",\"minZoom\":0,\"maxZoom\":10,\"attribution\":\"<p>&#169; <a href=\\\"http://www.openstreetmap.org/copyright\\\">OpenStreetMap</a> contributors | <a href=\\\"https://www.elastic.co/elastic-maps-service\\\">Elastic Maps Service</a></p>&#10;\",\"subdomains\":[]},{\"minZoom\":0,\"maxZoom\":10,\"attribution\":\"\",\"url\":\"https://example.com/v1/default/{z}/{x}/{y}.png\",\"id\":\"Tilemap layer in yml\"}],\"selectedTmsLayer\":{\"id\":\"road_map\",\"url\":\"https://tiles.maps.elastic.co/v2/default/{z}/{x}/{y}.png?elastic_tile_service_tos=agree&my_app_name=kibana&my_app_version=6.2.2\",\"minZoom\":0,\"maxZoom\":10,\"attribution\":\"<p>&#169; <a href=\\\"http://www.openstreetmap.org/copyright\\\">OpenStreetMap</a> contributors | <a href=\\\"https://www.elastic.co/elastic-maps-service\\\">Elastic Maps Service</a></p>&#10;\",\"subdomains\":[]}}},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{}},{\"id\":\"2\",\"enabled\":true,\"type\":\"geohash_grid\",\"schema\":\"segment\",\"params\":{\"field\":\"detail.service.action.portProbeAction.portProbeDetails.remoteIpDetails.geoLocation\",\"autoPrecision\":false,\"isFilteredByCollar\":false,\"useGeocentroid\":false,\"precision\":2}}]}",
-"uiStateJSON": "{\"mapZoom\":2,\"mapCenter\":[55.57834467218206,57.65625000000001]}",
-"description": "",
-"version": 1,
-"kibanaSavedObjectMeta": {
-"searchSourceJSON": "{\"index\":\"gdt-*\",\"filter\":[],\"query\":{\"language\":\"lucene\",\"query\":\"\"}}"
-}
-}
-},
-{
-"_id": "2586bf40-5a88-11e8-b4bb-0be2df95142f",
-"_type": "visualization",
-"_source": {
-"title": "GuardDuty - Network Connection Source Countries",
-"visState": "{\"title\":\"GuardDuty - Network Connection Source Countries\",\"type\":\"region_map\",\"params\":{\"legendPosition\":\"bottomright\",\"addTooltip\":true,\"colorSchema\":\"Yellow to Red\",\"selectedLayer\":{\"attribution\":\"<p><a href=\\\"http://www.naturalearthdata.com/about/terms-of-use\\\">Made with NaturalEarth</a> | <a href=\\\"https://www.elastic.co/elastic-maps-service\\\">Elastic Maps Service</a></p>&#10;\",\"name\":\"World Countries\",\"weight\":1,\"format\":{\"type\":\"geojson\"},\"url\":\"https://vector.maps.elastic.co/blob/5659313586569216?elastic_tile_service_tos=agree&my_app_version=6.2.2\",\"fields\":[{\"name\":\"iso2\",\"description\":\"Two letter abbreviation\"},{\"name\":\"name\",\"description\":\"Country name\"},{\"name\":\"iso3\",\"description\":\"Three letter abbreviation\"}],\"created_at\":\"2017-04-26T17:12:15.978370\",\"tags\":[],\"id\":5659313586569216,\"layerId\":\"elastic_maps_service.World Countries\"},\"selectedJoinField\":{\"name\":\"name\",\"description\":\"Country name\"},\"isDisplayWarning\":false,\"wms\":{\"enabled\":false,\"options\":{\"format\":\"image/png\",\"transparent\":true},\"baseLayersAreLoaded\":{\"_c\":[],\"_s\":1,\"_d\":true,\"_v\":true,\"_h\":0,\"_n\":false},\"tmsLayers\":[{\"id\":\"road_map\",\"url\":\"https://tiles.maps.elastic.co/v2/default/{z}/{x}/{y}.png?elastic_tile_service_tos=agree&my_app_name=kibana&my_app_version=6.2.2\",\"minZoom\":0,\"maxZoom\":10,\"attribution\":\"<p>&#169; <a href=\\\"http://www.openstreetmap.org/copyright\\\">OpenStreetMap</a> contributors | <a href=\\\"https://www.elastic.co/elastic-maps-service\\\">Elastic Maps Service</a></p>&#10;\",\"subdomains\":[]},{\"minZoom\":0,\"maxZoom\":10,\"attribution\":\"\",\"url\":\"https://example.com/v1/default/{z}/{x}/{y}.png\",\"id\":\"Tilemap layer in yml\"}],\"selectedTmsLayer\":{\"id\":\"road_map\",\"url\":\"https://tiles.maps.elastic.co/v2/default/{z}/{x}/{y}.png?elastic_tile_service_tos=agree&my_app_name=kibana&my_app_version=6.2.2\",\"minZoom\":0,\"maxZoom\":10,\"attribution\":\"<p>&#169; <a href=\\\"http://www.openstreetmap.org/copyright\\\">OpenStreetMap</a> contributors | <a href=\\\"https://www.elastic.co/elastic-maps-service\\\">Elastic Maps Service</a></p>&#10;\",\"subdomains\":[]}},\"mapZoom\":2,\"mapCenter\":[0,0],\"outlineWeight\":1,\"showAllShapes\":true},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{}},{\"id\":\"2\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"segment\",\"params\":{\"field\":\"detail.service.action.networkConnectionAction.remoteIpDetails.country.countryName.keyword\",\"otherBucket\":false,\"otherBucketLabel\":\"Other\",\"missingBucket\":false,\"missingBucketLabel\":\"Missing\",\"size\":5,\"order\":\"desc\",\"orderBy\":\"1\"}}]}",
-"uiStateJSON": "{}",
-"description": "",
-"version": 1,
-"kibanaSavedObjectMeta": {
-"searchSourceJSON": "{\"index\":\"gdt-*\",\"filter\":[],\"query\":{\"query\":\"\",\"language\":\"lucene\"}}"
-}
-}
-},
-{
-"_id": "09c74180-53cb-11e8-84f7-3dc4803c5c72",
-"_type": "visualization",
-"_source": {
-"title": "GuardDuty - Severity Levels",
-"visState": "{\"title\":\"GuardDuty - Severity Levels\",\"type\":\"pie\",\"params\":{\"addLegend\":true,\"addTooltip\":true,\"isDonut\":false,\"labels\":{\"last_level\":false,\"show\":false,\"truncate\":50,\"values\":true},\"legendPosition\":\"right\",\"type\":\"pie\"},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{}},{\"id\":\"2\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"segment\",\"params\":{\"field\":\"sevLevel\",\"otherBucket\":false,\"otherBucketLabel\":\"Other\",\"missingBucket\":false,\"missingBucketLabel\":\"Missing\",\"size\":5,\"order\":\"desc\",\"orderBy\":\"1\"}}]}",
-"uiStateJSON": "{\"vis\":{\"colors\":{\"High\":\"#BF1B00\",\"Low\":\"#7EB26D\",\"Medium\":\"#EAB839\"}}}",
-"description": "",
-"version": 1,
-"kibanaSavedObjectMeta": {
-"searchSourceJSON": "{\"index\":\"gdt-*\",\"filter\":[],\"query\":{\"language\":\"lucene\",\"query\":\"\"}}"
-}
-}
-},
-{
-"_id": "1ae2f2b0-539a-11e8-8fcf-47b4f3c43412",
-"_type": "visualization",
-"_source": {
-"title": "GuardDuty - Threat Type",
-"visState": "{\"title\":\"GuardDuty - Threat Type\",\"type\":\"pie\",\"params\":{\"addLegend\":true,\"addTooltip\":true,\"isDonut\":true,\"labels\":{\"last_level\":false,\"show\":false,\"truncate\":100,\"values\":false},\"legendPosition\":\"right\",\"type\":\"pie\"},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{}},{\"id\":\"2\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"segment\",\"params\":{\"field\":\"typeCategory\",\"otherBucket\":false,\"otherBucketLabel\":\"Other\",\"missingBucket\":false,\"missingBucketLabel\":\"Missing\",\"size\":10,\"order\":\"desc\",\"orderBy\":\"1\"}},{\"id\":\"3\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"segment\",\"params\":{\"field\":\"detail.type.keyword\",\"otherBucket\":false,\"otherBucketLabel\":\"Other\",\"missingBucket\":false,\"missingBucketLabel\":\"Missing\",\"size\":5,\"order\":\"desc\",\"orderBy\":\"1\"}}]}",
-"uiStateJSON": "{}",
-"description": "",
-"version": 1,
-"kibanaSavedObjectMeta": {
-"searchSourceJSON": "{\"index\":\"gdt-*\",\"filter\":[],\"query\":{\"language\":\"lucene\",\"query\":\"\"}}"
-}
-}
-},
-{
-"_id": "e1f98b00-5202-11e8-84f7-3dc4803c5c72",
-"_type": "visualization",
-"_source": {
-"title": "GuardDuty - Top10 Findings",
-"visState": "{\n  \"title\": \"GuardDuty - Top10 Findings\",\n  \"type\": \"table\",\n  \"params\": {\n    \"perPage\": 10,\n    \"showPartialRows\": false,\n    \"showMeticsAtAllLevels\": false,\n    \"sort\": {\n      \"columnIndex\": null,\n      \"direction\": null\n    },\n    \"showTotal\": false,\n    \"totalFunc\": \"sum\"\n  },\n  \"aggs\": [\n    {\n      \"id\": \"1\",\n      \"enabled\": true,\n      \"type\": \"count\",\n      \"schema\": \"metric\",\n      \"params\": {}\n    },\n    {\n      \"id\": \"2\",\n      \"enabled\": true,\n      \"type\": \"terms\",\n      \"schema\": \"bucket\",\n      \"params\": {\n        \"field\": \"detail.description.keyword\",\n        \"otherBucket\": false,\n        \"otherBucketLabel\": \"Other\",\n        \"missingBucket\": false,\n        \"missingBucketLabel\": \"Missing\",\n        \"size\": 10,\n        \"order\": \"desc\",\n        \"orderBy\": \"1\"\n      }\n    }\n  ]\n}",
-"uiStateJSON": "{\n  \"vis\": {\n    \"params\": {\n      \"sort\": {\n        \"columnIndex\": null,\n        \"direction\": null\n      }\n    }\n  }\n}",
-"description": "",
-"version": 1,
-"kibanaSavedObjectMeta": {
-"searchSourceJSON": "{\n  \"index\": \"gdt-*\",\n  \"filter\": [],\n  \"query\": {\n    \"query\": \"\",\n    \"language\": \"lucene\"\n  }\n}"
-}
-}
-},
-{
-"_id": "a9038730-53ef-11e8-84f7-3dc4803c5c72",
-"_type": "visualization",
-"_source": {
-"title": "GuardDuty - Total Events",
-"visState": "{\n  \"title\": \"GuardDuty - Total Events\",\n  \"type\": \"metric\",\n  \"params\": {\n    \"addTooltip\": true,\n    \"addLegend\": false,\n    \"type\": \"metric\",\n    \"metric\": {\n      \"percentageMode\": false,\n      \"useRanges\": false,\n      \"colorSchema\": \"Green to Red\",\n      \"metricColorMode\": \"None\",\n      \"colorsRange\": [\n        {\n          \"from\": 0,\n          \"to\": 10000\n        }\n      ],\n      \"labels\": {\n        \"show\": true\n      },\n      \"invertColors\": false,\n      \"style\": {\n        \"bgFill\": \"#000\",\n        \"bgColor\": false,\n        \"labelColor\": false,\n        \"subText\": \"\",\n        \"fontSize\": 30\n      }\n    }\n  },\n  \"aggs\": [\n    {\n      \"id\": \"1\",\n      \"enabled\": true,\n      \"type\": \"count\",\n      \"schema\": \"metric\",\n      \"params\": {}\n    },\n    {\n      \"id\": \"2\",\n      \"enabled\": true,\n      \"type\": \"terms\",\n      \"schema\": \"group\",\n      \"params\": {\n        \"field\": \"detail-type.keyword\",\n        \"otherBucket\": false,\n        \"otherBucketLabel\": \"Other\",\n        \"missingBucket\": false,\n        \"missingBucketLabel\": \"Missing\",\n        \"size\": 5,\n        \"order\": \"desc\",\n        \"orderBy\": \"_term\"\n      }\n    }\n  ]\n}",
-"uiStateJSON": "{}",
-"description": "",
-"version": 1,
-"kibanaSavedObjectMeta": {
-"searchSourceJSON": "{\n  \"index\": \"gdt-*\",\n  \"filter\": [],\n  \"query\": {\n    \"query\": \"\",\n    \"language\": \"lucene\"\n  }\n}"
-}
-}
-}
+  {
+    "_id": "c4e2ced0-dfd4-11e9-bc17-03ff3abda5df",
+    "_type": "dashboard",
+    "_source": {
+      "title": "DevSecOps Dashboard - Guard Duty Findings",
+      "hits": 0,
+      "description": "",
+      "panelsJSON": "[{\"gridData\":{\"x\":0,\"y\":12,\"w\":15,\"h\":12,\"i\":\"1\"},\"id\":\"2512d400-4fa1-11e8-84f7-3dc4803c5c72\",\"panelIndex\":\"1\",\"type\":\"visualization\",\"version\":\"6.8.0\"},{\"gridData\":{\"x\":0,\"y\":36,\"w\":48,\"h\":13,\"i\":\"4\"},\"id\":\"e1f98b00-5202-11e8-84f7-3dc4803c5c72\",\"panelIndex\":\"4\",\"type\":\"visualization\",\"version\":\"6.8.0\"},{\"embeddableConfig\":{\"vis\":{\"legendOpen\":true}},\"gridData\":{\"x\":0,\"y\":0,\"w\":17,\"h\":12,\"i\":\"6\"},\"id\":\"1ae2f2b0-539a-11e8-8fcf-47b4f3c43412\",\"panelIndex\":\"6\",\"type\":\"visualization\",\"version\":\"6.8.0\"},{\"gridData\":{\"x\":0,\"y\":24,\"w\":48,\"h\":12,\"i\":\"7\"},\"id\":\"39c50260-53a2-11e8-84f7-3dc4803c5c72\",\"panelIndex\":\"7\",\"type\":\"visualization\",\"version\":\"6.8.0\"},{\"gridData\":{\"x\":15,\"y\":12,\"w\":15,\"h\":12,\"i\":\"8\"},\"id\":\"09c74180-53cb-11e8-84f7-3dc4803c5c72\",\"panelIndex\":\"8\",\"type\":\"visualization\",\"version\":\"6.8.0\"},{\"gridData\":{\"x\":30,\"y\":12,\"w\":18,\"h\":12,\"i\":\"9\"},\"id\":\"a9038730-53ef-11e8-84f7-3dc4803c5c72\",\"panelIndex\":\"9\",\"type\":\"visualization\",\"version\":\"6.8.0\"},{\"embeddableConfig\":{\"mapCenter\":[51.6180165487737,0],\"mapZoom\":1},\"gridData\":{\"x\":17,\"y\":0,\"w\":31,\"h\":12,\"i\":\"17\"},\"id\":\"2586bf40-5a88-11e8-b4bb-0be2df95142f\",\"panelIndex\":\"17\",\"type\":\"visualization\",\"version\":\"6.8.0\"},{\"gridData\":{\"x\":0,\"y\":49,\"w\":48,\"h\":23,\"i\":\"18\"},\"version\":\"6.8.0\",\"panelIndex\":\"18\",\"type\":\"search\",\"id\":\"b92b7fc0-dfd3-11e9-bc17-03ff3abda5df\",\"embeddableConfig\":{}}]",
+      "optionsJSON": "{\"darkTheme\":false,\"hidePanelTitles\":false,\"useMargins\":true}",
+      "version": 1,
+      "timeRestore": true,
+      "timeTo": "now",
+      "timeFrom": "now-7d",
+      "refreshInterval": {
+        "pause": true,
+        "value": 0
+      },
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"language\":\"lucene\",\"query\":\"\"},\"filter\":[{\"$state\":{\"store\":\"appState\"},\"meta\":{\"alias\":\"Show Sample Findings\",\"disabled\":true,\"index\":\"gdt-*\",\"key\":\"detail.service.additionalInfo.sample\",\"negate\":true,\"params\":{\"query\":true,\"type\":\"phrase\"},\"type\":\"phrase\",\"value\":true},\"query\":{\"match\":{\"detail.service.additionalInfo.sample\":{\"query\":true,\"type\":\"phrase\"}}}}],\"highlightAll\":true,\"version\":true}"
+      }
+    }
+  }
 ]
